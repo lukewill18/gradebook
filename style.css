@@ -1,0 +1,63 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
+}
+
+#grade-table {
+    border: 1px solid black;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+#add-form, #grade-table {
+    text-align: center;
+}
+
+#name-entry {
+    margin-right: 10px; 
+}
+
+#add-btn {
+    width: 50px;
+    height: 25px;
+}
+
+#delete-btn {
+    width: 100px;
+    height: 50px;
+}
+
+#grade-table tr {
+    border-bottom: 1px solid black;
+}
+
+#grade-table tbody tr:nth-child(odd) {
+    background: white;
+}
+#grade-table tbody tr:nth-child(even) {
+    background: #f2f2f2;
+}
+
+.small-col, .big-col {
+    border-right: 1px solid black;
+}
+
+.small-col {
+    width: 15%;
+}
+
+.med-col {
+    width: 25%;
+}
+
+.big-col {
+    width: 60%;
+}
+
+#name-col, #grade-col {
+    cursor: pointer;
+}
