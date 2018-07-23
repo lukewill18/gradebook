@@ -2,12 +2,46 @@ let numStudents = 0;
 let totalScore = 0;
 const passingGrade = 60;
 
-function checkPassing(gradeCol, grade) {
+function validateName(name) {
+    let errorMsg = "";  
+    name = name.trim();
+    if(name == "") {
+        throw Error("Name is empty, ");
+    }
+    if(name.split(" ").length < 2) {
+        errorMsg += "Name is not 2 or more words, ";
+    }
+    if(!/^[a-zA-Z ]+$/.test(name)) {
+        errorMsg += "Name is not made up of purely letters and spaces, ";
+    }
+    if(errorMsg != "") {
+        throw Error(errorMsg);
+    }
+}
+
+function validateGrade(grade) {
+    let errorMsg = "";
+    if(grade.trim() == "") {
+        throw Error("Grade is empty, ");
+    }
+    else if(!/^[0-9.]+$/.test(grade)) {
+        errorMsg += "Grade is not made up of purely digits and period, ";
+    }
+    let gradeNum = parseFloat(grade);
+    if(gradeNum > 100 || gradeNum < 0) {
+        errorMsg += "Grade is not within the range 0-100, ";
+    }
+    if(errorMsg != "") {
+        throw Error(errorMsg);
+    }
+}
+
+function checkPassing(grade) {
     if(grade >= passingGrade) {
-        gradeCol.css("background-color", "#a1f06c");
+        return "passing";
     }
     else {
-        gradeCol.css("background-color", "#ff715e");
+        return "failing";
     }
 }
 
@@ -21,21 +55,26 @@ function updateAverage(table) {
     }
 }
 
-function addStudent(table, name, grade) {
-    let newStudent = $("<tr>").append($("<td>").addClass("small-col").append($("<input>").attr("type", "checkbox")));
-    let nameP = $("<p>").text(name);
-    let nameCol = $("<td>").addClass("big-col").append(nameP);
-    newStudent.append(nameCol);
-    
-    let gradeNum = parseFloat(grade);
-    let gradeCol = $("<td>").addClass("med-col").text(gradeNum.toFixed(2));
-    checkPassing(gradeCol, gradeNum);
-    newStudent.append(gradeCol);
-    let icon = $("<i>").addClass("fas fa-times");
-    newStudent.append($("<td>").addClass("smaller-col").append(icon));
+function generateStudent(name, gradeNum) {
+    return `<tr> 
+                <td class='small-col'> 
+                    <input type='checkbox'> 
+                </td> 
+                <td class='big-col'> 
+                    <p>${name}</p> 
+                </td> 
+                <td class='med-col ${checkPassing(gradeNum)}'>
+                    ${gradeNum}%
+                </td>
+                <td class='smaller-col'>
+                    <i class='fas fa-times'>
+                </td>
+            </tr>`;
+}
 
-    table.children("tbody").append(newStudent);
-    
+function addStudent(table, name, grade) {
+    let gradeNum = parseFloat(grade);
+    table.children("tbody").append(generateStudent(name, gradeNum.toFixed(2)));
     ++numStudents;
     totalScore += gradeNum;
     updateAverage(table);
@@ -79,23 +118,32 @@ function sortRows(tbody, sortfunc, arr) {
     }
 }
 
+function showAlert(alert, message) {
+    alert.css("opacity", 1);
+    alert.text("Error: " + message);
+    setTimeout(function() {
+        alert.css("opacity", 0);
+    }, 4500);
+}
+
 $(document).ready(function() {
     let table = $("#grade-table");
     let tbody = table.children("tbody");
     let form = $("#add-form");
     let checkAllBtn = $("#check-all");
-
+    let nameEntry = form.children("#name-entry");
+    let alert = $("#alert");
     let nameSort = 0;
     let gradeSort = 0;
 
     let oldName;
 
-    form.children("#name-entry").focus();   
+    nameEntry.focus();   
 
     $("input").keypress(function (e) {
         if (e.which == 13) {
             e.preventDefault();
-            $("#add-form").submit();
+            form.submit();
         }
       });
 
@@ -104,18 +152,29 @@ $(document).ready(function() {
         const fd = new FormData(e.target);
         let name = fd.get("name");  
         let grade = fd.get("grade");
+        let errorMsg = "";
 
-        if(name == "") {
-            alert("Please enter a name");
+        try {
+            validateName(name);
         }
-        else if(grade == "" || parseFloat(grade) > 100 || parseFloat(grade) < 0) {
-            alert("Please enter a valid number from 0-100 (no letters or special characters)")
+        catch(e) {
+            errorMsg += e.message;
+        }
+        try {
+            validateGrade(grade);
+        }
+        catch(e) {
+            errorMsg += e.message;
+        }
+        if(errorMsg != "") {
+            showAlert(alert, errorMsg.slice(0, -2));
         }
         else {
-            addStudent(table, name, grade);
+            addStudent(table, name.trim(), grade);
             form.children("input").val("");
         }
-        form.children("#name-entry").focus();
+        
+        nameEntry.focus();
     });
 
     checkAllBtn.change(function() {
@@ -168,16 +227,28 @@ $(document).ready(function() {
         oldName = $(this).text();
         let inputbox = $("<input>").attr({"type": "text", "value": oldName}).addClass("name-replacer");
         $(this).replaceWith(inputbox);
-        inputbox.focus();
+        inputbox.select();
     });
 
     tbody.on("focusout", ".name-replacer", function() {
         let newName = $(this).val();
-        if(newName == "") {
+        if(newName.trim() == "") {
             newName = oldName;
+            let nameP = $("<p>").text(newName);
+            $(this).replaceWith(nameP);
         }
-        let nameP = $("<p>").text(newName);
-        $(this).replaceWith(nameP);
+        else {
+            try {
+                validateName(newName);  
+                let nameP = $("<p>").text(newName);
+                $(this).replaceWith(nameP);
+            }
+            catch(e) {
+                if(e.message != "Failed to execute 'replaceChild' on 'Node': The node to be removed is no longer a child of this node. Perhaps it was moved in a 'blur' event handler?")
+                showAlert(alert, e.message.slice(0, -2));
+            }
+        }
+        
     });
 
     tbody.on("keydown", ".name-replacer", function (e) {
@@ -185,5 +256,5 @@ $(document).ready(function() {
             $(this).focusout();
         }
       });
-
+    
 });

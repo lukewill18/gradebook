@@ -24,20 +24,22 @@
             <tr>
                 <td class="small-col"><button class="btn btn-offer" id="delete-btn">Delete</button></td>
                 <td class="big-col"></td>
-                <td class="med-col"><p>Average: <span id="average-score"></span></p></td>
+                <td class="med-col"><p>Average: <span id="average-score">0</span>%</p></td>
             </tr>
         </tfoot>
       </table>
-      <form id="add-form">
+    <form id="add-form">
         <h3>Add a student: </h3>
         <label>Name:</label>
         <input type="text" id="name-entry" name="name" placeholder="ex: John Doe" required>
         <label>Grade (%):</label>
         <input type="number" name="grade" min="0" max="100" step=".01" placeholder="ex: 100" required>
         <button class="btn btn-offer" id="add-btn">Add</button>
-      </form>
+        <div class="alert alert-danger" id="alert">ALERT</div>
+    </form>
 
       <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
       <script src="script.js"></script>
+      <script src="test.js"></script>
   </body>
 </html>

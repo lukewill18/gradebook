@@ -11,6 +11,7 @@ body {
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
+
 }
 
 #add-form, #grade-table {
@@ -66,6 +67,8 @@ body {
 
 #name-col, #grade-col {
     cursor: pointer;
+    color: white;
+    background: linear-gradient(to bottom, rgba(125,126,125,1) 0%,rgba(14,14,14,1) 100%);
 }
 
 .fa-times {
@@ -76,4 +79,43 @@ body {
 .big-col p {
     padding: 0;
     margin: 0;
+}
+
+.passing {
+    background-color: #a1f06c;
+}
+
+.failing {
+    background-color: #ff715e;
+}
+
+.name-replacer {
+    width: 60%;
+    text-align: center;
+}
+
+.alert {
+    background: white;
+    color: black;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 350px;
+    height: 100px;
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity .3s;
+    padding: 10px;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.show-alert {
+    opacity: 1;
 }
