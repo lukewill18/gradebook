@@ -27,8 +27,9 @@ body {
 }
 
 #delete-btn {
-    width: 100px;
-    height: 50px;
+    width: 60px;
+    height: 40px;
+    font-size: 12px;
 }
 
 #grade-table tr {
@@ -42,12 +43,17 @@ body {
     background: #f2f2f2;
 }
 
-.small-col, .big-col {
+.small-col, .big-col, .med-col {
     border-right: 1px solid black;
 }
 
 .small-col {
-    width: 15%;
+    width: 10%;
+}
+
+.smaller-col {
+    width: 5%;
+    border-top: 1px solid black;
 }
 
 .med-col {
@@ -60,4 +66,14 @@ body {
 
 #name-col, #grade-col {
     cursor: pointer;
+}
+
+.fa-times {
+    color: red;
+    cursor: pointer;
+}
+
+.big-col p {
+    padding: 0;
+    margin: 0;
 }

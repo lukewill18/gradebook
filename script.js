@@ -23,13 +23,16 @@ function updateAverage(table) {
 
 function addStudent(table, name, grade) {
     let newStudent = $("<tr>").append($("<td>").addClass("small-col").append($("<input>").attr("type", "checkbox")));
-    let nameCol = $("<td>").addClass("big-col").text(name);
+    let nameP = $("<p>").text(name);
+    let nameCol = $("<td>").addClass("big-col").append(nameP);
     newStudent.append(nameCol);
     
     let gradeNum = parseFloat(grade);
     let gradeCol = $("<td>").addClass("med-col").text(gradeNum.toFixed(2));
     checkPassing(gradeCol, gradeNum);
     newStudent.append(gradeCol);
+    let icon = $("<i>").addClass("fas fa-times");
+    newStudent.append($("<td>").addClass("smaller-col").append(icon));
 
     table.children("tbody").append(newStudent);
     
@@ -78,12 +81,14 @@ function sortRows(tbody, sortfunc, arr) {
 
 $(document).ready(function() {
     let table = $("#grade-table");
-    let tbody = table.children("tbody")
+    let tbody = table.children("tbody");
     let form = $("#add-form");
     let checkAllBtn = $("#check-all");
 
     let nameSort = 0;
     let gradeSort = 0;
+
+    let oldName;
 
     form.children("#name-entry").focus();   
 
@@ -97,7 +102,7 @@ $(document).ready(function() {
     form.on("submit", function(e) {
         e.preventDefault();
         const fd = new FormData(e.target);
-        let name = fd.get("name");
+        let name = fd.get("name");  
         let grade = fd.get("grade");
 
         if(name == "") {
@@ -137,6 +142,7 @@ $(document).ready(function() {
                 break;
         }
     });
+    
     table.find("#grade-col").click(function() {
         gradeSort = (gradeSort + 1) % 2;
         let grades = $(tbody).find(".med-col");
@@ -153,4 +159,31 @@ $(document).ready(function() {
                 break;
         }
     });
+
+    tbody.on("click", ".fa-times", function() {
+        deleteStudent(table, $(this).parent().parent());
+    });
+
+    tbody.on("click", "p", function() {
+        oldName = $(this).text();
+        let inputbox = $("<input>").attr({"type": "text", "value": oldName}).addClass("name-replacer");
+        $(this).replaceWith(inputbox);
+        inputbox.focus();
+    });
+
+    tbody.on("focusout", ".name-replacer", function() {
+        let newName = $(this).val();
+        if(newName == "") {
+            newName = oldName;
+        }
+        let nameP = $("<p>").text(newName);
+        $(this).replaceWith(nameP);
+    });
+
+    tbody.on("keydown", ".name-replacer", function (e) {
+        if (e.which == 13 || e.which == 27) {   
+            $(this).focusout();
+        }
+      });
+
 });
