@@ -102,10 +102,10 @@ body {
     width: 350px;
     height: 100px;
     position: absolute;
-    top: 5px;
+    top: -500px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1;
+    z-index: 0;
     opacity: 0;
     transition: opacity .3s;
     padding: 10px;

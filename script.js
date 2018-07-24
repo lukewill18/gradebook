@@ -119,10 +119,10 @@ function sortRows(tbody, sortfunc, arr) {
 }
 
 function showAlert(alert, message) {
-    alert.css("opacity", 1);
+    alert.css({"opacity": 1, "z-index": 1, "top": "5px"});
     alert.text("Error: " + message);
     setTimeout(function() {
-        alert.css("opacity", 0);
+        alert.css({"opacity": 0, "z-index": 0, "top": "-500px"});
     }, 4500);
 }
 
