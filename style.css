@@ -76,7 +76,7 @@ body {
     cursor: pointer;
 }
 
-.big-col p {
+.big-col p, .med-col p {
     padding: 0;
     margin: 0;
 }

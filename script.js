@@ -64,7 +64,7 @@ function generateStudent(name, gradeNum) {
                     <p>${name}</p> 
                 </td> 
                 <td class='med-col ${checkPassing(gradeNum)}'>
-                    ${gradeNum}%
+                    <p>${gradeNum}%</p>
                 </td>
                 <td class='smaller-col'>
                     <i class='fas fa-times'>
@@ -170,7 +170,7 @@ $(document).ready(function() {
             showAlert(alert, errorMsg.slice(0, -2));
         }
         else {
-            addStudent(table, name.trim(), grade);
+            addStudent(table, name.trim(), grade.trim());
             form.children("input").val("");
         }
         
@@ -223,7 +223,7 @@ $(document).ready(function() {
         deleteStudent(table, $(this).parent().parent());
     });
 
-    tbody.on("click", "p", function() {
+    tbody.on("click", ".big-col p", function() {
         oldName = $(this).text();
         let inputbox = $("<input>").attr({"type": "text", "value": oldName}).addClass("name-replacer");
         $(this).replaceWith(inputbox);
@@ -234,17 +234,16 @@ $(document).ready(function() {
         let newName = $(this).val();
         if(newName.trim() == "") {
             newName = oldName;
-            let nameP = $("<p>").text(newName);
-            $(this).replaceWith(nameP);
+            //let nameP = $("<p>").text(newName);
+            $(this).parent().html(`<p>${newName}</p>`);
         }
         else {
             try {
                 validateName(newName);  
-                let nameP = $("<p>").text(newName);
-                $(this).replaceWith(nameP);
+                //let nameP = $("<p>").text(newName);
+                $(this).parent().html(`<p>${newName}</p>`);
             }
             catch(e) {
-                if(e.message != "Failed to execute 'replaceChild' on 'Node': The node to be removed is no longer a child of this node. Perhaps it was moved in a 'blur' event handler?")
                 showAlert(alert, e.message.slice(0, -2));
             }
         }
