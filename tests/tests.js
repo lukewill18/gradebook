@@ -1,6 +1,6 @@
 import { Selector } from 'testcafe';
 
-fixture `Test page`
+fixture `Testing page`
    .page `file:///C:/Users/Luke/bootcamp/grade-table/index.html`;
 
 
@@ -200,6 +200,30 @@ let invalidInput = [
   }
 ];
 
+let extraInvalidNames = [
+  {
+    "name": {
+      "first": "Bob",
+      "last": ""
+    },
+    "expectedErrorMsg": "Name is not 2 or more words"
+  },
+  {
+    "name": {
+      "first": "Bob",
+      "last": "123"
+    },
+    "expectedErrorMsg": "Name is not made up of purely letters and spaces"
+  },
+  {
+    "name": {
+      "first": "`",
+      "last": ""
+    },
+    "expectedErrorMsg": "Name is not 2 or more words, Name is not made up of purely letters and spaces"
+  }
+];
+
 const nameEntry = Selector('#name-entry');
 const gradeEntry = Selector('#grade-entry');
 const addBtn = Selector("#add-btn");
@@ -213,8 +237,9 @@ const checkAll = table.find("thead #check-all");
 const deleteBtn = table.find("tfoot #delete-btn");
 
 
-async function addPeople(input, t) {
-    for(let i = 0; i < input.length; ++i) {
+async function addPeople(input, t, length) {
+    length = length || input.length;
+    for(let i = 0; i < length; ++i) {
         let person = input[i];
     await t
         .typeText(nameEntry, person.name.first + " " + person.name.last, { replace: true })
@@ -382,22 +407,37 @@ async function editValidInput() {
 
 async function editInvalidInput() {
   test('Editing input to be invalid', async t => {
-    await addPeople(validInput, t);
-
+    let rows = await table.find("tbody tr");
+    await addPeople(validInput, t, extraInvalidNames.length);
+    for(let i = 0; i < extraInvalidNames.length; ++i) {
+      let oldName = await rows.nth(i).find(".big-col p").textContent;
+      let text = await rows.nth(i).find(".big-col p");
+      await t.click(text);
+      let inputbox = await rows.nth(i).find(".name-replacer");
+      let newName = extraInvalidNames[i].name.first + " " + extraInvalidNames[i].name.last;
+      await t
+        .typeText(inputbox, newName, { replace: true })
+        .pressKey('esc')
+        .expect(alert.textContent).eql("Error: " + extraInvalidNames[i].expectedErrorMsg)
+        .selectText(inputbox)
+        .pressKey('delete')
+        .pressKey('esc')
+        .expect(text.textContent).eql(oldName);
+      }
   });
 }
 
 async function testValidInput() {
-  //addValidInput();
-  //sortValidInput();   
-  //deleteValidInput();  
+  addValidInput();
+  sortValidInput();   
+  deleteValidInput();  
   editValidInput();
 }
 
 async function testInvalidInput() {
   addInvalidInput();
-  //editInvalidInput();
+  editInvalidInput();
 }
 
 testValidInput();
-//testInvalidInput();
+testInvalidInput();
