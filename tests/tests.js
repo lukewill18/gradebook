@@ -274,8 +274,9 @@ async function addValidInput() {
             .click(addBtn);
         const row = await table.find("tbody tr").nth(i);
         const name = await row.find(".big-col p");
-        const grade = await row.find(".med-col p");
-        const passOrFail = parseFloat(grade) >= 60 ? "passing" : "failing";
+        const gradeCol = await row.find(".med-col");
+        const grade = await gradeCol.find("p").textContent;
+        const passOrFail = parseFloat(grade.toString().slice(0, -1)) >= 60 ? "passing" : "failing";
         const checkBox = await row.find(".small-col input");
         const deleteButton = await row.find(".smaller-col .fa-times");
         await t
@@ -283,8 +284,8 @@ async function addValidInput() {
             .expect(checkBox.exists).ok()
             .expect(deleteButton.exists).ok()
             .expect(name.textContent).contains(person.name.first + " " + person.name.last)
-            .expect(grade.textContent).contains(parseFloat(person.grade).toFixed(2).toString() + "%")
-            .expect(grade.hasClass(passOrFail));
+            .expect(grade).contains(parseFloat(person.grade).toFixed(2).toString() + "%")
+            .expect(gradeCol.hasClass(passOrFail)).ok();
     }
     await t.expect(averageCol.textContent).eql("Average: " + (totalGrade/validInput.length).toFixed(2).toString() + "%");
   });
@@ -382,7 +383,7 @@ async function editValidInput() {
     for(let i = 0; i < validInput.length; ++i) {
       let text = rows.nth(i).find(".big-col p");
       await t.click(text);
-      let inputbox = rows.nth(i).find(".name-replacer");
+      let inputbox = await rows.nth(i).find(".name-replacer");
       let newName = extraValidNames[i].name.first + " " + extraValidNames[i].name.last;
       await t
         .typeText(inputbox, newName, { replace: true })
