@@ -1,0 +1,30 @@
+{
+  "name": "grade-table",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukewill18/gradebook.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lukewill18/gradebook/issues"
+  },
+  "homepage": "https://github.com/lukewill18/gradebook#readme",
+  "devDependencies": {
+    "husky": "^1.0.0-rc.13"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "testcafe chrome tests/tests.js"
+    }
+  }
+}
